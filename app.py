@@ -1,15 +1,13 @@
-from flask import Flask, request, jsonify
+from flask import Flask, render_template, request, jsonify
 from flask_mysqldb import MySQL
 from flask_cors import CORS
 from config import MYSQL_CONFIG
 from flask import send_from_directory
 import hashlib
 from api_service import get_tutor_response
-import os
-
 app = Flask(__name__)
 CORS(app)
-
+import os
 # MySQL Config
 app.config['MYSQL_HOST']     = MYSQL_CONFIG['host']
 app.config['MYSQL_USER']     = MYSQL_CONFIG['user']
@@ -26,7 +24,7 @@ def hash_password(password):
 # ── Health check ──────────────────────────────────────────────────────────────
 @app.route('/')
 def home():
-    return "Flask Backend Running ✅"
+    return render_template('code.html')
 
 @app.route('/favicon.ico')
 def favicon():
