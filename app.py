@@ -4,6 +4,8 @@ from flask_cors import CORS
 from config import MYSQL_CONFIG
 from flask import send_from_directory
 import hashlib
+from ai_service import get_tutor_response
+import os
 
 app = Flask(__name__)
 CORS(app)
@@ -228,7 +230,23 @@ def create_topic():
     cur.close()
     return jsonify({'topic_id': topic_id, 'topic_name': topic_name}), 201
 
+@app.route('/api/chat', methods=['POST'])
+def chat_with_ai():
+    data = request.json
+    user_message = data.get('message')
+    history = data.get('history', [])
+    files = data.get('files', [])
+    sys_inst = data.get('systemInstruction')
+    
+    reply_text = get_tutor_response(user_message, history, files, sys_inst)
+    
+    if reply_text:
+        return jsonify({"status": "success", "reply": reply_text})
+    else:
+        return jsonify({"status": "error", "message": "The AI encountered an error processing this request."}), 500
 
+PORT = int(os.environ.get("PORT", 8000))
 # ── RUN ───────────────────────────────────────────────────────────────────────
-if __name__ == '__main__':
-    app.run(debug=True)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=PORT, debug=True)
+
