@@ -4,7 +4,7 @@ from flask_cors import CORS
 from config import MYSQL_CONFIG
 from flask import send_from_directory
 import hashlib
-from ai_service import get_tutor_response
+from api_service import get_tutor_response
 import os
 
 app = Flask(__name__)
